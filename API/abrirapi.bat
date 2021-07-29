@@ -1,0 +1,1 @@
+python -m uvicorn apiteste:app --realod

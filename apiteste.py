@@ -1,5 +1,4 @@
 import requests
-#from bs4 import BeautifulSoup
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,3 +36,17 @@ def retorna_corrida(race_id: str):
 def retorna_galgo(race_id: str, galgo_id: str):
     r = requests.get("https://greyhoundbet.racingpost.com/dog/blocks.sd?race_id="+race_id+"&r_date="+hoje+"&dog_id="+galgo_id+"&blocks=header%2Cdetails")
     return r.json();
+
+@app.get("/corridafull/{race_id}")
+def retorna_corridafull(race_id: str):
+    r = requests.get("https://greyhoundbet.racingpost.com/card/blocks.sd?race_id="+race_id+"&r_date="+hoje+"&tab=card&blocks=card-header%2Ccard-pager%2Ccard-tabs%2Ccard-title%2Ccard");
+    newr = r.json();
+    print(newr)
+    for galgo in newr['card']['dogs']:
+        #print(galgo)
+        galgoId = galgo['dogId']
+        print(galgoId)
+        rg = requests.get("https://greyhoundbet.racingpost.com/dog/blocks.sd?race_id="+race_id+"&r_date="+hoje+"&dog_id="+galgoId+"&blocks=header%2Cdetails")
+        #print(rg.json())
+        galgo['info'] = (rg.json())
+    return newr

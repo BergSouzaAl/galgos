@@ -10,7 +10,8 @@ app = FastAPI()
 origins = [
     "http://localhost",
     "http://localhost:80",
-    "https://bergalgos.herokuapp.com/"
+    "https://bergalgos.herokuapp.com",
+    "https://bergalgos.herokuapp.com:80"
 ]
 
 app.add_middleware(

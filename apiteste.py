@@ -10,6 +10,7 @@ app = FastAPI()
 origins = [
     "http://localhost",
     "http://localhost:80",
+    "https://bergalgos.herokuapp.com/"
 ]
 
 app.add_middleware(
@@ -55,20 +56,19 @@ def retorna_corridafull(race_id: str):
 def retorna_corridasfull():
     r = requests.get("https://greyhoundbet.racingpost.com/meeting/blocks.sd?r_date="+hoje+"&view=time&blocks=header%2Clist");
     newr = r.json();
-    pista = newr['list']['items'][0]
-    #for pista in newr['list']['items'][0]:
-    print(pista)
-    if pista['tvShortName']  != "":
-        for corrida in pista['races']:
-            print(corrida)
-            c = requests.get("https://greyhoundbet.racingpost.com/card/blocks.sd?race_id="+corrida['raceId']+"&r_date="+hoje+"&tab=card&blocks=card-header%2Ccard-pager%2Ccard-tabs%2Ccard-title%2Ccard");
-            newc = c.json();
-            for galgo in newc['card']['dogs']:
-                galgoId = galgo['dogId']
-                #print(galgoId)
-                rg = requests.get("https://greyhoundbet.racingpost.com/dog/blocks.sd?race_id="+corrida['raceId']+"&r_date="+hoje+"&dog_id="+galgoId+"&blocks=header%2Cdetails")
-                galgo['info'] = (rg.json())
-            corrida['infoC'] = newc
+    for pista in newr['list']['items']:
+        #print(pista)
+        if pista['tvShortName']  != "":
+            for corrida in pista['races']:
+                #print(corrida)
+                c = requests.get("https://greyhoundbet.racingpost.com/card/blocks.sd?race_id="+corrida['raceId']+"&r_date="+hoje+"&tab=card&blocks=card-header%2Ccard-pager%2Ccard-tabs%2Ccard-title%2Ccard");
+                newc = c.json();
+                for galgo in newc['card']['dogs']:
+                    galgoId = galgo['dogId']
+                    #print(galgoId)
+                    rg = requests.get("https://greyhoundbet.racingpost.com/dog/blocks.sd?race_id="+corrida['raceId']+"&r_date="+hoje+"&dog_id="+galgoId+"&blocks=header%2Cdetails")
+                    galgo['info'] = (rg.json())
+                corrida['infoC'] = newc
     return newr
 
     
